@@ -1,116 +1,236 @@
 #include <stdio.h>
 
-#define TAM 10         // tamanho do tabuleiro (10x10)
-#define TAM_NAVIO 3    // tamanho fixo dos navios
+#define TAB_SIZE 10     // tamanho do tabuleiro (10x10)
+#define NAV_SIZE 3      // tamanho dos navios (3)
+#define SKILL_SIZE 5    // tamanho das matrizes de habilidade (5x5)
+#define SHIP_VAL 3      // valor que representa navio no tabuleiro
+#define SKILL_VAL 5     // valor que representa área de habilidade no tabuleiro
+#define WATER_VAL 0     // valor que representa água
 
 int main() {
-    int tabuleiro[TAM][TAM];
+    int tabuleiro[TAB_SIZE][TAB_SIZE];
     int i, j;
 
-    // Inicializa o tabuleiro com 0 (água)
-    for (i = 0; i < TAM; i++) {
-        for (j = 0; j < TAM; j++) {
-            tabuleiro[i][j] = 0;
+    // ---------- Inicializa o tabuleiro com água (0) ----------
+    for (i = 0; i < TAB_SIZE; i++) {
+        for (j = 0; j < TAB_SIZE; j++) {
+            tabuleiro[i][j] = WATER_VAL;
         }
     }
 
-    // =========================
-    // Coordenadas dos 4 navios
-    // (definidas diretamente no código)
-    // =========================
+    // ---------- Posiciona 4 navios (tamanho 3) ----------
+    // Coordenadas escolhidas diretamente no código (lin, col)
+    // Navio 1: horizontal
+    int l1 = 3, c1 = 1;
+    // Navio 2: vertical
+    int l2 = 5, c2 = 6;
+    // Navio 3: diagonal ↘
+    int l3 = 0, c3 = 0;
+    // Navio 4: diagonal ↙
+    int l4 = 0, c4 = 9;
 
-    // 1º navio - horizontal (sem sobreposição agora)
-    int linhaNavio1 = 3;
-    int colunaNavio1 = 1;
-
-    // 2º navio - vertical
-    int linhaNavio2 = 5;
-    int colunaNavio2 = 6;
-
-    // 3º navio - diagonal ↘ (linha e coluna aumentam)
-    int linhaNavio3 = 0;
-    int colunaNavio3 = 0;
-
-    // 4º navio - diagonal ↙ (linha aumenta, coluna diminui)
-    int linhaNavio4 = 0;
-    int colunaNavio4 = 9;
-
-    // =========================
-    // FUNÇÃO SIMPLIFICADA DE VALIDAÇÃO E POSICIONAMENTO
-    // Para cada navio: 1) validar limites 2) validar sobreposição 3) posicionar
-    // =========================
-
-    // --- 1º NAVIO (Horizontal) ---
-    // Valida limites
-    if (colunaNavio1 + TAM_NAVIO > TAM) {
-        printf("Erro: Navio 1 (horizontal) fora dos limites!\n");
+    // Função simples de validar e posicionar (valida limites e sobreposição)
+    // 1) Navio horizontal (linha fixa, colunas consecutivas)
+    if (c1 + NAV_SIZE > TAB_SIZE) {
+        printf("Erro: Navio 1 fora dos limites\n");
         return 1;
     }
-    // Valida sobreposição
-    for (j = 0; j < TAM_NAVIO; j++) {
-        if (tabuleiro[linhaNavio1][colunaNavio1 + j] != 0) {
-            printf("Erro: Sobreposição detectada no navio 1!\n");
+    for (j = 0; j < NAV_SIZE; j++) {
+        if (tabuleiro[l1][c1 + j] != WATER_VAL) {
+            printf("Erro: Sobreposição ao posicionar navio 1\n");
             return 1;
         }
     }
-    // Posiciona navio 1
-    for (j = 0; j < TAM_NAVIO; j++) {
-        tabuleiro[linhaNavio1][colunaNavio1 + j] = 3;
-    }
+    for (j = 0; j < NAV_SIZE; j++) tabuleiro[l1][c1 + j] = SHIP_VAL;
 
-    // --- 2º NAVIO (Vertical) ---
-    if (linhaNavio2 + TAM_NAVIO > TAM) {
-        printf("Erro: Navio 2 (vertical) fora dos limites!\n");
+    // 2) Navio vertical (coluna fixa, linhas consecutivas)
+    if (l2 + NAV_SIZE > TAB_SIZE) {
+        printf("Erro: Navio 2 fora dos limites\n");
         return 1;
     }
-    for (i = 0; i < TAM_NAVIO; i++) {
-        if (tabuleiro[linhaNavio2 + i][colunaNavio2] != 0) {
-            printf("Erro: Sobreposição detectada no navio 2!\n");
+    for (i = 0; i < NAV_SIZE; i++) {
+        if (tabuleiro[l2 + i][c2] != WATER_VAL) {
+            printf("Erro: Sobreposição ao posicionar navio 2\n");
             return 1;
         }
     }
-    for (i = 0; i < TAM_NAVIO; i++) {
-        tabuleiro[linhaNavio2 + i][colunaNavio2] = 3;
-    }
+    for (i = 0; i < NAV_SIZE; i++) tabuleiro[l2 + i][c2] = SHIP_VAL;
 
-    // --- 3º NAVIO (Diagonal ↘) ---
-    if (linhaNavio3 + TAM_NAVIO > TAM || colunaNavio3 + TAM_NAVIO > TAM) {
-        printf("Erro: Navio 3 (diagonal ↘) fora dos limites!\n");
+    // 3) Navio diagonal ↘ (linha e coluna aumentam)
+    if (l3 + NAV_SIZE > TAB_SIZE || c3 + NAV_SIZE > TAB_SIZE) {
+        printf("Erro: Navio 3 fora dos limites\n");
         return 1;
     }
-    for (i = 0; i < TAM_NAVIO; i++) {
-        if (tabuleiro[linhaNavio3 + i][colunaNavio3 + i] != 0) {
-            printf("Erro: Sobreposição detectada no navio 3!\n");
+    for (i = 0; i < NAV_SIZE; i++) {
+        if (tabuleiro[l3 + i][c3 + i] != WATER_VAL) {
+            printf("Erro: Sobreposição ao posicionar navio 3\n");
             return 1;
         }
     }
-    for (i = 0; i < TAM_NAVIO; i++) {
-        tabuleiro[linhaNavio3 + i][colunaNavio3 + i] = 3;
-    }
+    for (i = 0; i < NAV_SIZE; i++) tabuleiro[l3 + i][c3 + i] = SHIP_VAL;
 
-    // --- 4º NAVIO (Diagonal ↙) ---
-    if (linhaNavio4 + TAM_NAVIO > TAM || colunaNavio4 - (TAM_NAVIO - 1) < 0) {
-        printf("Erro: Navio 4 (diagonal ↙) fora dos limites!\n");
+    // 4) Navio diagonal ↙ (linha aumenta, coluna diminui)
+    if (l4 + NAV_SIZE > TAB_SIZE || c4 - (NAV_SIZE - 1) < 0) {
+        printf("Erro: Navio 4 fora dos limites\n");
         return 1;
     }
-    for (i = 0; i < TAM_NAVIO; i++) {
-        if (tabuleiro[linhaNavio4 + i][colunaNavio4 - i] != 0) {
-            printf("Erro: Sobreposição detectada no navio 4!\n");
+    for (i = 0; i < NAV_SIZE; i++) {
+        if (tabuleiro[l4 + i][c4 - i] != WATER_VAL) {
+            printf("Erro: Sobreposição ao posicionar navio 4\n");
             return 1;
         }
     }
-    for (i = 0; i < TAM_NAVIO; i++) {
-        tabuleiro[linhaNavio4 + i][colunaNavio4 - i] = 3;
+    for (i = 0; i < NAV_SIZE; i++) tabuleiro[l4 + i][c4 - i] = SHIP_VAL;
+
+    // ---------- Construção dinâmica das matrizes de habilidade (5x5) ----------
+    // Vamos criar 3 matrizes de habilidade com valores 0/1:
+    // cone[SKILL_SIZE][SKILL_SIZE] : cone apontando para baixo (↘ expansão)
+    // cross[SKILL_SIZE][SKILL_SIZE] : cruz com origem no centro
+    // octa[SKILL_SIZE][SKILL_SIZE] : losango (vista frontal de octaedro)
+
+    int cone[SKILL_SIZE][SKILL_SIZE];
+    int cross[SKILL_SIZE][SKILL_SIZE];
+    int octa[SKILL_SIZE][SKILL_SIZE];
+
+    // índice do centro (para SKILL_SIZE ímpar)
+    int center = SKILL_SIZE / 2;
+
+    // --- Preenche todas com zeros primeiro ---
+    for (i = 0; i < SKILL_SIZE; i++) {
+        for (j = 0; j < SKILL_SIZE; j++) {
+            cone[i][j] = 0;
+            cross[i][j] = 0;
+            octa[i][j] = 0;
+        }
     }
 
-    // =========================
-    // Exibe o tabuleiro
-    // =========================
-    printf("\n=== TABULEIRO BATALHA NAVAL - NIVEL AVENTUREIRO ===\n\n");
-    for (i = 0; i < TAM; i++) {
-        for (j = 0; j < TAM; j++) {
+    // --- Monta o CONE (apontando para baixo).
+    // Para cada linha r (de 0 no topo até SKILL_SIZE-1), a largura é 1 + 2*r
+    // centrada na coluna 'center'. Usamos condicionais para marcar 1s.
+    for (i = 0; i < SKILL_SIZE; i++) {
+        int half_width = i; // expande 0,1,2,... nas linhas (para SKILL_SIZE=5)
+        int left = center - half_width;
+        int right = center + half_width;
+        // garante limites dentro da matriz de habilidade
+        if (left < 0) left = 0;
+        if (right > SKILL_SIZE - 1) right = SKILL_SIZE - 1;
+        for (j = left; j <= right; j++) {
+            cone[i][j] = 1;
+        }
+    }
+
+    // --- Monta a CRUZ: linha central e coluna central são 1
+    for (i = 0; i < SKILL_SIZE; i++) {
+        for (j = 0; j < SKILL_SIZE; j++) {
+            if (i == center || j == center) {
+                cross[i][j] = 1;
+            }
+        }
+    }
+
+    // --- Monta o OCTAEDRO (vista frontal -> losango / diamante)
+    // condição: abs(i-center) + abs(j-center) <= center
+    for (i = 0; i < SKILL_SIZE; i++) {
+        for (j = 0; j < SKILL_SIZE; j++) {
+            int dist = ( (i > center ? i - center : center - i) +
+                         (j > center ? j - center : center - j) );
+            if (dist <= center) {
+                octa[i][j] = 1;
+            } else {
+                octa[i][j] = 0;
+            }
+        }
+    }
+
+    // ---------- Define pontos de origem (centro) de cada habilidade no tabuleiro ----------
+    // Escolha direta no código:
+    int originConeR = 1, originConeC = 2;   // onde o topo (linha 0 da skill) ficará centrado?
+    // Para facilidade, vamos tratar a origem como o **centro** da matriz de habilidade.
+    // Então origin é a posição do tabuleiro que corresponde ao center da skill.
+    int originCrossR = 4, originCrossC = 4;
+    int originOctaR  = 6, originOctaC  = 2;
+
+    // ---------- Função de sobreposição: aplica uma skill ao tabuleiro ----------
+    // Regras:
+    // - Para cada célula da matriz de skill que tiver 1:
+    //    calcula a posição correspondente no tabuleiro (com base no centro)
+    // - Se estiver dentro dos limites do tabuleiro:
+    //    e se tabuleiro[pos] == WATER_VAL -> marca com SKILL_VAL (5)
+    //    se já houver navio (SHIP_VAL) -> *não sobrescreve*, mantém navio visível
+    // Observação: podemos alterar este comportamento se quiser sobrescrever navios.
+
+    // --- Aplica cone ---
+    for (i = 0; i < SKILL_SIZE; i++) {
+        for (j = 0; j < SKILL_SIZE; j++) {
+            if (cone[i][j] == 1) {
+                int boardR = originConeR + (i - center);
+                int boardC = originConeC + (j - center);
+                if (boardR >= 0 && boardR < TAB_SIZE && boardC >= 0 && boardC < TAB_SIZE) {
+                    if (tabuleiro[boardR][boardC] == WATER_VAL) {
+                        tabuleiro[boardR][boardC] = SKILL_VAL;
+                    }
+                    // se tiver navio (3), não sobrescreve - mantém 3
+                }
+            }
+        }
+    }
+
+    // --- Aplica cross ---
+    for (i = 0; i < SKILL_SIZE; i++) {
+        for (j = 0; j < SKILL_SIZE; j++) {
+            if (cross[i][j] == 1) {
+                int boardR = originCrossR + (i - center);
+                int boardC = originCrossC + (j - center);
+                if (boardR >= 0 && boardR < TAB_SIZE && boardC >= 0 && boardC < TAB_SIZE) {
+                    if (tabuleiro[boardR][boardC] == WATER_VAL) {
+                        tabuleiro[boardR][boardC] = SKILL_VAL;
+                    }
+                }
+            }
+        }
+    }
+
+    // --- Aplica octaedro (diamond) ---
+    for (i = 0; i < SKILL_SIZE; i++) {
+        for (j = 0; j < SKILL_SIZE; j++) {
+            if (octa[i][j] == 1) {
+                int boardR = originOctaR + (i - center);
+                int boardC = originOctaC + (j - center);
+                if (boardR >= 0 && boardR < TAB_SIZE && boardC >= 0 && boardC < TAB_SIZE) {
+                    if (tabuleiro[boardR][boardC] == WATER_VAL) {
+                        tabuleiro[boardR][boardC] = SKILL_VAL;
+                    }
+                }
+            }
+        }
+    }
+
+    // ---------- Exibe o tabuleiro final ----------
+    // Valores: 0 = água, 3 = navio, 5 = área de habilidade
+    printf("\n=== TABULEIRO FINAL (0=agua, 3=navio, 5=area habilidade) ===\n\n");
+    for (i = 0; i < TAB_SIZE; i++) {
+        for (j = 0; j < TAB_SIZE; j++) {
             printf("%d ", tabuleiro[i][j]);
         }
+        printf("\n");
+    }
+
+    // ---------- (Opcional) Mostrar as matrizes de habilidade no console ----------
+    printf("\nMatriz - CONE (1=afetado):\n");
+    for (i = 0; i < SKILL_SIZE; i++) {
+        for (j = 0; j < SKILL_SIZE; j++) printf("%d ", cone[i][j]);
+        printf("\n");
+    }
+
+    printf("\nMatriz - CROSS (1=afetado):\n");
+    for (i = 0; i < SKILL_SIZE; i++) {
+        for (j = 0; j < SKILL_SIZE; j++) printf("%d ", cross[i][j]);
+        printf("\n");
+    }
+
+    printf("\nMatriz - OCTAEDRO (1=afetado):\n");
+    for (i = 0; i < SKILL_SIZE; i++) {
+        for (j = 0; j < SKILL_SIZE; j++) printf("%d ", octa[i][j]);
         printf("\n");
     }
 
